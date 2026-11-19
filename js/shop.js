@@ -1,5 +1,8 @@
 window.dataLayer = window.dataLayer || [];
 
+const USER_ID = getUserId();
+window.dataLayer.push({ user_id: USER_ID });
+
 (function loadGtm(id) {
   if (!id || id.includes("XXXX")) return;
   window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
@@ -24,6 +27,20 @@ const storage = {
     } catch (e) {}
   },
 };
+
+function getUserId() {
+  let id = null;
+  try {
+    id = localStorage.getItem("user_id");
+    if (!id) {
+      id = "u-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
+      localStorage.setItem("user_id", id);
+    }
+  } catch (e) {
+    id = id || "u-anonymous";
+  }
+  return id;
+}
 
 function getCart() {
   return storage.get("cart", []);
@@ -57,9 +74,15 @@ function ga4Item(product, quantity, index) {
   };
 }
 
-function trackEcommerce(eventName, ecommerce) {
+function trackEcommerce(eventName, ecommerce, action) {
   window.dataLayer.push({ ecommerce: null });
-  window.dataLayer.push({ event: eventName, ecommerce: ecommerce });
+  window.dataLayer.push({
+    event: eventName,
+    action: action,
+    location: document.body.dataset.page,
+    user_id: USER_ID,
+    ecommerce: ecommerce,
+  });
 }
 
 function cartEcommerce(cart) {
@@ -82,7 +105,7 @@ function addToCart(productId, quantity) {
     currency: SHOP_CONFIG.currency,
     value: round2(product.price * quantity),
     items: [ga4Item(product, quantity, 0)],
-  });
+  }, "click_add_to_cart");
   toast("«" + product.name + "» додано в кошик");
 }
 
@@ -107,7 +130,7 @@ function renderCartCount() {
 function productCard(product) {
   return `
     <article class="card">
-      <a class="card-link" href="product.html?id=${product.id}">
+      <a class="card-link" href="product.html?id=${product.id}" data-select="${product.id}">
         <div class="thumb">${product.emoji}</div>
         <div class="card-category">${product.category}</div>
         <h3>${product.name}</h3>
@@ -125,11 +148,21 @@ const pages = {
     document.querySelectorAll("[data-add]").forEach((btn) =>
       btn.addEventListener("click", () => addToCart(btn.dataset.add, 1))
     );
+    document.querySelectorAll("[data-select]").forEach((link) =>
+      link.addEventListener("click", () => {
+        const index = PRODUCTS.findIndex((p) => p.id === link.dataset.select);
+        trackEcommerce("select_item", {
+          item_list_id: "catalog",
+          item_list_name: "Каталог",
+          items: [ga4Item(PRODUCTS[index], 1, index)],
+        }, "click_product_card");
+      })
+    );
     trackEcommerce("view_item_list", {
       item_list_id: "catalog",
       item_list_name: "Каталог",
       items: PRODUCTS.map((p, i) => ga4Item(p, 1, i)),
-    });
+    }, "open_catalog");
   },
 
   product() {
@@ -156,10 +189,10 @@ const pages = {
       currency: SHOP_CONFIG.currency,
       value: product.price,
       items: [ga4Item(product, 1, 0)],
-    });
+    }, "open_product");
   },
 
-  cart() {
+  cart(track = true) {
     const cart = getCart();
     const box = document.getElementById("cart");
     if (cart.length === 0) {
@@ -183,7 +216,11 @@ const pages = {
         </tbody>
       </table>
       <div class="cart-total">Разом: <strong>${money(cartTotal(cart))}</strong></div>
-      <a class="btn btn-big" href="checkout.html">Оформити замовлення</a>`;
+      <a class="btn btn-big" href="checkout.html" id="go-checkout">Оформити замовлення</a>`;
+
+    document.getElementById("go-checkout").addEventListener("click", () =>
+      trackEcommerce("begin_checkout", cartEcommerce(getCart()), "click_checkout")
+    );
 
     box.querySelectorAll("[data-remove]").forEach((btn) =>
       btn.addEventListener("click", () => {
@@ -194,12 +231,12 @@ const pages = {
           currency: SHOP_CONFIG.currency,
           value: round2(product.price * line.quantity),
           items: [ga4Item(product, line.quantity, 0)],
-        });
+        }, "click_delete_item");
         saveCart(current.filter((l) => l.id !== line.id));
-        pages.cart();
+        pages.cart(false);
       })
     );
-    trackEcommerce("view_cart", cartEcommerce(cart));
+    if (track) trackEcommerce("view_cart", cartEcommerce(cart), "open_cart");
   },
 
   checkout() {
@@ -209,7 +246,6 @@ const pages = {
       return;
     }
     document.getElementById("checkout-total").textContent = money(cartTotal(cart));
-    trackEcommerce("begin_checkout", cartEcommerce(cart));
 
     document.getElementById("checkout-form").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -246,7 +282,7 @@ const pages = {
       shipping: 0,
       tax: 0,
       items: order.items,
-    });
+    }, "click_confirm_order");
     storage.set("tracked_orders", tracked.concat(order.transaction_id));
   },
 
