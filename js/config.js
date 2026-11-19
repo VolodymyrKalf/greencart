@@ -1,5 +1,5 @@
 const SHOP_CONFIG = {
   shopName: "GreenCart",
-  gtmId: "GTM-XXXXXXX",
+  gtmId: "GTM-K9LRGWPR",
   currency: "USD",
 };
