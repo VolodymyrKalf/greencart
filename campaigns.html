@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GreenCart — кампанії</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/shop.js"></script>
+</head>
+<body data-page="campaigns">
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="index.html"><span>●</span> <span data-shop-name>GreenCart</span></a>
+      <nav class="nav">
+        <a href="index.html">Каталог</a>
+        <a href="campaigns.html">Кампанії</a>
+        <a href="cart.html">Кошик <span class="badge" data-cart-count>0</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Маркетингові кампанії (UTM-посилання)</h1>
+      <p>Кожне посилання імітує перехід з розсилки. Мітки відповідають активностям аналітичної системи:
+        <strong>utm_source</strong> = канал, <strong>utm_medium</strong> = тип кампанії, <strong>utm_campaign</strong> = тема.</p>
+    </section>
+
+    <div class="campaign-list">
+      <div class="campaign">
+        <a href="index.html?utm_source=email&amp;utm_medium=bulk&amp;utm_campaign=sale_out">Email-розсилка «Розпродаж»</a>
+        <code>email | bulk | sale out</code>
+      </div>
+      <div class="campaign">
+        <a href="index.html?utm_source=mobile_push&amp;utm_medium=bulk&amp;utm_campaign=sale_out">Push-сповіщення «Розпродаж»</a>
+        <code>mobile_push | bulk | sale out</code>
+      </div>
+      <div class="campaign">
+        <a href="cart.html?utm_source=email&amp;utm_medium=trigger&amp;utm_campaign=abandoned_cart">Тригерний лист «Ви залишили товари в кошику»</a>
+        <code>email | trigger | abandoned cart</code>
+      </div>
+      <div class="campaign">
+        <a href="product.html?id=SKU-102&amp;utm_source=email&amp;utm_medium=trigger&amp;utm_campaign=abandoned_view">Тригерний лист «Ви переглядали товар»</a>
+        <code>email | trigger | abandoned view</code>
+      </div>
+      <div class="campaign">
+        <a href="product.html?id=SKU-105&amp;utm_source=email&amp;utm_medium=trigger&amp;utm_campaign=added_to_wish_list">Тригерний лист «Товар зі списку бажань»</a>
+        <code>email | trigger | added to wish list</code>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">Демонстраційний магазин для магістерської роботи. Замовлення не виконуються, оплата не здійснюється.</div>
+  </footer>
+</body>
+</html>

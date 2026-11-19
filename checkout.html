@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GreenCart — оформлення</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/shop.js"></script>
+</head>
+<body data-page="checkout">
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="index.html"><span>●</span> <span data-shop-name>GreenCart</span></a>
+      <nav class="nav">
+        <a href="index.html">Каталог</a>
+        <a href="campaigns.html">Кампанії</a>
+        <a href="cart.html">Кошик <span class="badge" data-cart-count>0</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h1>Оформлення замовлення</h1>
+      <p>Сума замовлення: <strong id="checkout-total"></strong></p>
+      <form class="checkout-form" id="checkout-form">
+        <fieldset>
+          <legend>Доставка</legend>
+          <label><input type="radio" name="shipping" value="Самовивіз" checked> Самовивіз</label>
+          <label><input type="radio" name="shipping" value="Кур'єр"> Кур'єр</label>
+        </fieldset>
+        <fieldset>
+          <legend>Оплата</legend>
+          <label><input type="radio" name="payment" value="Картка" checked> Картка</label>
+          <label><input type="radio" name="payment" value="Під час отримання"> Під час отримання</label>
+        </fieldset>
+        <p class="note">Це демонстрація: персональні дані не запитуються, оплата не проводиться.</p>
+        <button class="btn btn-big" type="submit">Підтвердити замовлення</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">Демонстраційний магазин для магістерської роботи. Замовлення не виконуються, оплата не здійснюється.</div>
+  </footer>
+</body>
+</html>
